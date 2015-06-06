@@ -1,0 +1,16 @@
+#!/bin/bash
+set -eu
+
+debug=${OSP_DEBUG:-false}
+build_dir=$1
+
+download_from_scm() {
+    wget -r -nH --preserve-permissions --level=0 --cut-dirs=10 --directory-prefix="${build_dir}" ftp://cp01-rdqa-pool480.cp01.baidu.com/home/users/yanming02/RunEnv/Redis3.0/osp/zk/zookeeper-3.4.6.tar.gz
+    tar xvf ${build_dir}/zookeeper-3.4.6.tar.gz -C ${build_dir}
+}
+
+if [[ -d $build_dir ]]; then
+    rm -rf $build_dir
+fi
+
+download_from_scm

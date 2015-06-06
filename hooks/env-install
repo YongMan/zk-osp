@@ -1,0 +1,28 @@
+#!/bin/bash
+set -eu
+
+function check_md5(){
+	
+	md5_tmp=$(md5sum $file_name |awk '{print $1}') 
+	md5=$(cat $file_name."md5" |awk '{print $1}')
+	if [ "$md5_tmp" != "$md5" ]
+	then
+		echo "$file_name md5 check fail!"
+		exit 1
+	else
+		return 0
+	fi 
+}
+
+#wget -r -nH --preserve-permissions --level=0 --cut-dirs=8 ftp://getprod:getprod@product.scm.baidu.com:/data/prod-64/inf/odp/osp/env/store-env/store-env_1-0-0-0_PD_BL
+#cd output
+
+#tar zxvf store-env.tar.gz
+
+#file_name="jumbo.tar.gz"
+#check_md5
+
+#tar zxvf jumbo.tar.gz -C /home/work
+
+#cd ../
+#rm -rf output

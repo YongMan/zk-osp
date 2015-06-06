@@ -1,0 +1,15 @@
+#!/bin/bash
+set -eu
+
+source $OSP_PROGRAM_HOME/scripts/common.sh
+
+log_info "Check environment variables"
+if ! check_unit_env; then
+    log_fatal "Failed to check unit environment variables"
+fi
+
+bin_file=$OSP_UNIT_HOME/bin/zkServer.sh
+
+log_info "Start zookeeper"
+${bin_file} restart
+

@@ -1,0 +1,32 @@
+#!/bin/bash
+set -eu
+
+source $OSP_PROGRAM_HOME/scripts/common.sh
+
+log_info "Check environment variables"
+if ! check_unit_env; then
+    log_fatal "Failed to check unit environment variables"
+fi
+
+log_info "Build"
+if ! $OSP_PROGRAM_HOME/scripts/build $build_dir; then
+    log_fatal "Failed to build service"
+fi
+
+log_info "Copy the executable"
+cp $build_dir/zookeeper-3.4.6/* $OSP_UNIT_HOME/ -r
+
+log_info "Get client port"
+client_port="$(unit-get client_port)"
+if [[ -z $client_port ]]; then
+    log_fatal "Failed to unit-get client_port"
+fi
+
+log_info "Get communicate port"
+port="$(unit-get communicate_port)"
+if [[ -z $port ]]; then
+    log_fatal "Failed to unit-get communicate_port"
+fi
+
+bin_file=$OSP_UNIT_HOME/bin/zkServer.sh
+conf_file=$OSP_UNIT_HOME/conf/zoo.conf

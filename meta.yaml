@@ -1,0 +1,10 @@
+name: zookeeper
+
+ports:
+  - client_port
+  - communicate_port
+  - election_port
+
+bns:
+  ports:
+    main: client_port

@@ -1,0 +1,64 @@
+#!/bin/bash
+set -eu
+
+source $OSP_PROGRAM_HOME/scripts/common.sh
+
+log_info "Check environment variables"
+if ! check_unit_env; then
+    log_fatal "Failed to check unit environment variables"
+fi
+
+log_info "Get local ip"
+ip="$(hostname -i)"
+
+log_info "Get client port"
+client_port="$(unit-get client_port)"
+if [[ -z $client_port ]]; then
+    log_fatal "Failed to unit-get client_port"
+fi
+
+log_info "Get communicate port"
+port="$(unit-get communicate_port)"
+if [[ -z $port ]]; then
+    log_fatal "Failed to unit-get communicate_port"
+fi
+
+bin_file=$OSP_UNIT_HOME/bin/zkServer.sh
+conf_file=$OSP_UNIT_HOME/conf/zoo.conf
+myid_file=$OSP_UNIT_HOME/data/myid
+conf_alter=$OSP_PROGRAM_HOME/scripts/conf-alter
+
+#update zoo.conf
+log_info "Set port"
+${conf_alter} -f ${conf_file} -k clientPort -v ${client_port}
+
+config_keys="
+ticktime
+initlimi
+synclimit
+datadir
+logdir
+server.1
+server.2
+server.3
+server.4
+server.5
+"
+
+for key in $config_keys; do
+    value="$(config-get $key)"
+    if [[ "$value" ]]; then
+        log_info "Set config ${key} = ${value}"
+        ${conf_alter} -f ${conf_file} -k $key -v $value
+    fi
+done
+
+myid="$(config-get "myid")"
+if [[ "$myid" ]]; then
+    log_info "Set myid to $myid"
+    cat $myid > $myid_file
+fi
+
+#update myid
+
+${bin_file} restart

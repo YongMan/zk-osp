@@ -1,0 +1,9 @@
+#!/bin/bash
+cd go/
+go build -o conf-alter
+cd ..
+
+mv go/conf-alter scripts/
+rm zookeeper.tar.gz
+tar czf ../zookeeper.tar.gz *
+mv ../zookeeper.tar.gz ./
