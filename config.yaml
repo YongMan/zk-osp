@@ -1,21 +1,21 @@
 options:
-  ticktime:
+  tickTime:
     default: 2000
     type: int
 
-  initlimit:
+  initLimit:
     default: 10
     type: int
 
-  synclimit:
+  syncLimit:
     default: 5
     type: int
 
-  datadir:
+  dataDir:
     default: "/home/work/data"
     type: string
 
-  logdir:
+  logDir:
     default: "/home/work/log"
     type: string
   myid:

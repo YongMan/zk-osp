@@ -24,7 +24,7 @@ if [[ -z $port ]]; then
 fi
 
 bin_file=$OSP_UNIT_HOME/bin/zkServer.sh
-conf_file=$OSP_UNIT_HOME/conf/zoo.conf
+conf_file=$OSP_UNIT_HOME/conf/zoo.cfg
 myid_file=$OSP_UNIT_HOME/data/myid
 conf_alter=$OSP_PROGRAM_HOME/scripts/conf-alter
 
@@ -33,11 +33,11 @@ log_info "Set port"
 ${conf_alter} -f ${conf_file} -k clientPort -v ${client_port}
 
 config_keys="
-ticktime
-initlimi
-synclimit
-datadir
-logdir
+tickTime
+initLimit
+syncLimit
+dataDir
+logDir
 server.1
 server.2
 server.3
@@ -56,7 +56,7 @@ done
 myid="$(config-get "myid")"
 if [[ "$myid" ]]; then
     log_info "Set myid to $myid"
-    cat $myid > $myid_file
+    echo $myid > $myid_file
 fi
 
 #update myid
