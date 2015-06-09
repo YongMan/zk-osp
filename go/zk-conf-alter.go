@@ -9,16 +9,18 @@ import (
 var key string
 var value string
 var file string
+var del bool
 
 func init() {
 	flag.StringVar(&file, "f", "", "config file")
 	flag.StringVar(&key, "k", "", "key to update")
 	flag.StringVar(&value, "v", "", "value to set")
+	flag.BoolVar(&del, "d", false, "flag delete operation")
 }
 
 func main() {
 	flag.Parse()
-	if file == "" || key == "" || value == "" {
+	if (!del && (file == "" || key == "" || value == "")) || (del && key == "") {
 		os.Exit(-1)
 	}
 
@@ -27,14 +29,18 @@ func main() {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
-	fmt.Println(config)
 	sec, err := config.Section("global")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
-	sec.Add(key, value)
-	fmt.Println(sec)
+	if !del {
+		//add or update
+		sec.Add(key, value)
+	} else {
+		//delete key
+		sec.DelRegex(key)
+	}
 	err = Save(config, file)
 	if err != nil {
 		fmt.Println(err)

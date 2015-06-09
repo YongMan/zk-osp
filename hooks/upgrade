@@ -8,3 +8,5 @@ if ! check_unit_env; then
     log_fatal "Failed to check unit environment variables"
 fi
 
+log_info "call config changed"
+source ${OSP_PROGRAM_HOME}/hooks/config-changed

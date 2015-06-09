@@ -1,0 +1,11 @@
+#!/bin/bash
+set -eu
+
+source $OSP_PROGRAM_HOME/scripts/common.sh
+
+log_info "Check environment variables"
+if ! check_relation_env; then
+    log_fatal "Failed to check relation environment variables"
+fi
+
+source $OSP_PROGRAM_HOME/hooks/config-changed

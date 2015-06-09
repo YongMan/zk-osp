@@ -1,5 +1,13 @@
 name: zookeeper
 
+requires:
+  - name: up
+    interface: peer
+
+provides:
+  - name: down
+    interface: peer
+
 ports:
   - client_port
   - communicate_port

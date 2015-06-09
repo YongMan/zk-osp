@@ -18,8 +18,8 @@ if [[ -z $client_port ]]; then
 fi
 
 log_info "Get communicate port"
-port="$(unit-get communicate_port)"
-if [[ -z $port ]]; then
+communicate_port="$(unit-get communicate_port)"
+if [[ -z $communicate_port ]]; then
     log_fatal "Failed to unit-get communicate_port"
 fi
 
@@ -38,11 +38,6 @@ initLimit
 syncLimit
 dataDir
 logDir
-server.1
-server.2
-server.3
-server.4
-server.5
 "
 
 for key in $config_keys; do
@@ -53,12 +48,35 @@ for key in $config_keys; do
     fi
 done
 
-myid="$(config-get "myid")"
+# use unit id as myid
+myid="$(unit-get unit_id)"
 if [[ "$myid" ]]; then
     log_info "Set myid to $myid"
     echo $myid > $myid_file
 fi
 
-#update myid
+# clear old servers in cfg file
+log_info "Clear old servers"
+${conf_alter} -f ${conf_file} -d -k server.*
+
+# update server list
+group_name="$(config-get group)"
+if [[ "$group_name" ]]; then
+    log_info "Set group name to $group_name"
+    log_info "Get servers from bns"
+    get_instance_by_service $group_name -ipo | while read s
+    do
+        echo $s
+        unit_id=`echo $s | awk '{print $4}'`
+        ip=`echo $s | awk '{print $2}'`
+        client_port=`echo $s | awk '{print $3}'`
+        communicate_port=$(($client_port+1))
+        election_port=$(($client_port+2))
+        key="server.${unit_id}"
+        value="${ip}:${communicate_port}:${election_port}"
+        log_info "Set $key = $value"
+        ${conf_alter} -f ${conf_file} -k $key -v $value
+    done
+fi
 
 ${bin_file} restart

@@ -11,6 +11,7 @@ export JAVA_HOME=$OSP_UNIT_HOME/jre
 # disable JMX by default
 export JMXDISABLE=1
 
+
 # fatal log
 log_fatal() {
     osp-log --fatal "$@"
@@ -46,6 +47,19 @@ check_unit_env() {
     return 0
 }
 
+# check relation hooks environment variables
+check_relation_env() {
+    if ! check_unit_env; then
+        return 1
+    fi
+
+    if [[ -z "$OSP_RELATION_ID" ]]; then
+        log_fatal "Please set env OSP_RELATION_ID"
+        return 1
+    fi
+
+    return 0
+}
 # get region from the logic idcmap
 get_region() {
     local idc=$1

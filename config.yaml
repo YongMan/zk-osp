@@ -18,22 +18,7 @@ options:
   logDir:
     default: "/home/work/log"
     type: string
-  myid:
-    default: 0
-    type: int
 
-  server.1:
-    default: ""
-    type: string
-  server.2:
-    default: ""
-    type: string
-  server.3:
-    default: ""
-    type: string
-  server.4:
-    default: ""
-    type: string
-  server.5:
+  group:
     default: ""
     type: string

@@ -360,6 +360,20 @@ func (s *Section) Delete(option string) (value string) {
 	return value
 }
 
+// Delete the specified option express by regEx
+func (s *Section) DelRegex(option string) {
+	options := []string{}
+	reg := regexp.MustCompile(option)
+	for _, opt := range s.orderedOptions {
+		if reg.Match([]byte(opt)) {
+			options = append(options, opt)
+		}
+	}
+	for _, opt := range options {
+		s.Delete(opt)
+	}
+}
+
 // Options returns a map of options for the section.
 func (s *Section) Options() map[string]string {
 	return s.options

@@ -1,0 +1,17 @@
+#!/bin/bash
+set -eu
+
+source $OSP_PROGRAM_HOME/scripts/common.sh
+
+log_info "Check environment variables"
+if ! check_relation_env; then
+    log_fatal "Failed to check relation environment variables"
+fi
+
+log_info "Triger opposite side config update"
+if ! relation-set update=1; then
+    log_fatal "Failed to relation-set update=1"
+fi
+
+log_info "Update config"
+source $OSP_PROGRAM_HOME/hooks/config-changed
